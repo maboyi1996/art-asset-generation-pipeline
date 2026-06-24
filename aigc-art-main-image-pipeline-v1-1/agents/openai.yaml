@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V1.1"
+  short_description: "从剧本生成可审核、可批量生图的美术主图生产表"
+  default_prompt: "Use $aigc-art-main-image-pipeline-v1-1 to extract character, scene, and prop main-image assets from this script, audit omissions and state variants, then produce main-image-production-table.md and prompt-manifest.json."
+
+policy:
+  allow_implicit_invocation: true
