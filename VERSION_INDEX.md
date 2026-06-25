@@ -1,4 +1,4 @@
-# Version Index
+﻿# Version Index
 
 | Version | Folder | Source |
 |---|---|---|
@@ -8,4 +8,3 @@
 | V2.0 | `aigc-art-main-image-pipeline-v2-0` | `C:\Users\Administrator\.codex\skills\aigc-art-main-image-pipeline-v2-0` |
 | V2.1 | `aigc-art-main-image-pipeline-v2-1` | `C:\Users\Administrator\.codex\skills\aigc-art-main-image-pipeline-v2-1` |
 
-V2.5 is excluded because it is still in testing.

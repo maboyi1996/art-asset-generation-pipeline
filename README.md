@@ -1,4 +1,4 @@
-# Art Asset Generation Pipeline
+﻿# Art Asset Generation Pipeline
 
 美术资产生成流程。
 
@@ -17,3 +17,4 @@ This repository stores archived Codex skill versions for the AIGC art main-image
 ## Not Included
 
 `aigc-art-main-image-pipeline-v2-5` is still under testing and is intentionally not submitted in this archive.
+
