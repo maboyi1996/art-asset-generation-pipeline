@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V2.61"
+  short_description: "Build main-image tables from lossless ledgers."
+  default_prompt: "Use $aigc-art-main-image-pipeline-v2-61 to read a Chinese script, build lossless character/scene/prop evidence ledgers before rating, enforce hard S/A/B/C routes, and deliver main-image-production-table.md plus main-image-review-table.md."
+
+policy:
+  allow_implicit_invocation: true

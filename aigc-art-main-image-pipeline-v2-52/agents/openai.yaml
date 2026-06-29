@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V2.52"
+  short_description: "Build main-image production and review MD tables from Chinese scripts with global asset task generation and character disposition closure."
+  default_prompt: "Use $aigc-art-main-image-pipeline-v2-52 to read a Chinese script, produce scene coverage, extract character/scene/prop assets, detect visible state variants, rate asset continuity, generate global task drafts for all retained production assets, build a character disposition ledger, create character identity anchors, audit production readiness, generate main-image prompts, and output main-image-production-table.md plus main-image-review-table.md."
+
+policy:
+  allow_implicit_invocation: true

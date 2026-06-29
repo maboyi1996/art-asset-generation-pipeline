@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V2.56"
+  short_description: "Build main-image tables with clean character ledgers."
+  default_prompt: "Use $aigc-art-main-image-pipeline-v2-56 to read a Chinese script, normalize polluted character labels into a cleanup ledger, enforce hard S/A/B/C character rating routes, build production-ready character/scene/prop main-image tasks, and output main-image-production-table.md plus main-image-review-table.md."
+
+policy:
+  allow_implicit_invocation: true

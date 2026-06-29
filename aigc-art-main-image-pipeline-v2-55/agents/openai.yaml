@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V2.55"
+  short_description: "Build main-image MD tables while blocking polluted character labels before registration."
+  default_prompt: "Use $aigc-art-main-image-pipeline-v2-55 to read a Chinese script, produce scene coverage, extract character/scene/prop assets while normalizing dialogue-prefix subjects and blocking action/emotion/speech/combination character labels, detect valid visible state variants, rate asset continuity with B/C character rules, generate global task drafts for all retained production assets, build a character disposition ledger, audit production readiness, generate main-image prompts, and output main-image-production-table.md plus main-image-review-table.md."
+
+policy:
+  allow_implicit_invocation: true

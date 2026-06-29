@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC Art Main Image Pipeline V2.60"
+  short_description: "Build main-image tables with pure layered asset flow."
+  default_prompt: "Use $aigc-art-main-image-pipeline-v2-60 to read a Chinese script, clean polluted labels at extraction, enforce hard S/A/B/C character routes, generate pure registry/disposition/task/mapping outputs, and deliver main-image-production-table.md plus main-image-review-table.md."
+
+policy:
+  allow_implicit_invocation: true
