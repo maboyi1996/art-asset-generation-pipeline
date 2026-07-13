@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "seedance-element-extract-manifest.v1",
+  "manifestVersion": "1.0",
+  "generationScope": "main_image_only",
+  "contentId": "326706045055401984",
+  "source": {
+    "skillId": "aigc-art-main-image-pipeline-v2-63",
+    "skillVersion": "2.63",
+    "generatedAt": "2026-06-22T17:35:20+08:00"
+  },
+  "project": {
+    "title": "示例项目"
+  },
+  "summary": {
+    "totalItems": 3,
+    "manualReviewItems": 0
+  },
+  "assets": [
+    {
+      "assetId": "role_tang_ning",
+      "templateName": "棠宁",
+      "templateType": "ROLE",
+      "description": "聪慧隐忍的女主，外柔内刚。",
+      "appearance": {
+        "description": "青年女性，古装短剧气质，清冷坚韧。",
+        "appearances": [
+          {
+            "stateId": "role_tang_ning_plain",
+            "name": "素衣常服",
+            "episodes": [1, 2],
+            "imageRatio": "9:16",
+            "imagePrompt": "Chinese historical drama heroine, plain light robe, calm but resilient expression, clean face identity, cinematic portrait, no text, no watermark.",
+            "negativePrompt": "modern clothes, wrong age, duplicate face, text, watermark",
+            "priority": "S",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "年龄、脸型、服装颜色必须稳定"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "第1集首次出场，是主要女性角色。"
+      }
+    },
+    {
+      "assetId": "scene_governor_bath",
+      "templateName": "督主府汤池",
+      "templateType": "SCENE",
+      "description": "督主府内隐秘汤池，水汽重，适合夜间刺杀戏。",
+      "appearance": {
+        "description": "古装权谋短剧中的室内汤池空间。",
+        "appearances": [
+          {
+            "stateId": "scene_governor_bath_night",
+            "name": "夜景水汽状态",
+            "episodes": [1],
+            "imageRatio": "16:9",
+            "imagePrompt": "Chinese historical governor mansion bath chamber at night, hot steam, stone pool, warm lantern light, tense cinematic atmosphere, no people, no text, no watermark.",
+            "negativePrompt": "modern bathroom, neon light, readable text, watermark",
+            "priority": "S",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "必须是古装室内汤池，不要现代浴室"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "第1集刺杀戏主要场景。"
+      }
+    },
+    {
+      "assetId": "prop_hairpin_dagger",
+      "templateName": "藏锋发簪",
+      "templateType": "PROP",
+      "description": "四夫人用来行刺的发簪，外观像首饰，尖端可刺杀。",
+      "appearance": {
+        "description": "古装女性发簪道具，兼具首饰和暗器感。",
+        "appearances": [
+          {
+            "stateId": "prop_hairpin_dagger_clean",
+            "name": "未出鞘状态",
+            "episodes": [1],
+            "imageRatio": "1:1",
+            "imagePrompt": "Ancient Chinese hairpin accessory, elegant metal ornament with sharp hidden tip, product-style prop reference, plain background, no text, no watermark.",
+            "negativePrompt": "modern knife, gun, readable text, watermark",
+            "priority": "A",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "看起来首先是发簪，其次才有暗器感"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "四夫人行刺动作的关键道具。"
+      }
+    }
+  ]
+}

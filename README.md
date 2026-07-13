@@ -22,6 +22,7 @@ This repository stores archived Codex skill versions for the AIGC art main-image
 | `aigc-art-main-image-pipeline-v2-56` | Patch archive: clean character ledgers and hard rating routes |
 | `aigc-art-main-image-pipeline-v2-60` | Patch archive: layered asset registry refactor |
 | `aigc-art-main-image-pipeline-v2-61` | Patch archive: lossless pre-rating evidence ledgers |
+| `aigc-art-main-image-pipeline-v2-63` | Recovered historical version: JSON primary deliverable generated from the completed machine production table |
 | `aigc-art-main-image-pipeline-v3-0` | V3.0 archived skill |
 | `aigc-art-main-image-pipeline-v3-1` | V3.1 archived skill |
 | `aigc-art-main-image-pipeline-v3-1-1` | V3.1.1 archived skill and installed plugin package snapshot |
@@ -32,4 +33,3 @@ This repository stores archived Codex skill versions for the AIGC art main-image
 - Each version folder contains the skill files, with `SKILL.md` at its root.
 - V3.1.1 and V4.0 also contain `_plugin-package`, preserving the installed plugin package structure and manifest.
 - This directory is an archive on the D drive. Active Codex installations remain under `C:\Users\Administrator\.codex\skills` and `C:\Users\Administrator\.codex\plugins`.
-
