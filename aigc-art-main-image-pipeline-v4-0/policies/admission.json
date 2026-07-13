@@ -1,0 +1,18 @@
+{
+  "schema_version": "aigc-admission-policy.v4",
+  "results": [
+    "admitted",
+    "evidence_only",
+    "visible_exclusion",
+    "polluted_exclusion"
+  ],
+  "rules": {
+    "polluted": "polluted_exclusion",
+    "nonvisual": "evidence_only",
+    "visible_stable": "admitted",
+    "visible_unstable": "admitted",
+    "default_visible": "admitted"
+  },
+  "uncertain_entity_policy": "keep_separate",
+  "generic_scope": "scene_or_episode"
+}

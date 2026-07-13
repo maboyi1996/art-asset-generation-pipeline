@@ -1,0 +1,208 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ingest.schema.json",
+  "$defs": {
+    "sourceBlock": {
+      "type": "object",
+      "required": [
+        "block_id",
+        "block_index",
+        "kind",
+        "text",
+        "source_locator",
+        "sha256"
+      ],
+      "properties": {
+        "block_id": {
+          "type": "string"
+        },
+        "block_index": {
+          "type": "integer"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "heading",
+            "paragraph",
+            "table_row",
+            "pdf_text",
+            "text_line"
+          ]
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_locator": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sceneBoundaryFactor": {
+      "type": "object",
+      "required": [
+        "block_ids",
+        "episode_label",
+        "scene_heading",
+        "scene_order_hint",
+        "location",
+        "time_of_day",
+        "confidence"
+      ],
+      "properties": {
+        "block_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_label": {
+          "type": "string"
+        },
+        "scene_heading": {
+          "type": "string"
+        },
+        "scene_order_hint": {
+          "type": "integer"
+        },
+        "location": {
+          "type": "string"
+        },
+        "time_of_day": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "scene_id",
+        "episode_id",
+        "scene_index",
+        "block_ids",
+        "heading",
+        "location",
+        "time_of_day",
+        "text",
+        "source_sha256"
+      ],
+      "properties": {
+        "scene_id": {
+          "type": "string"
+        },
+        "episode_id": {
+          "type": "string"
+        },
+        "scene_index": {
+          "type": "integer"
+        },
+        "block_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "heading": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "time_of_day": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_sha256": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "sourceCoverage": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "total_blocks",
+        "assigned_blocks",
+        "duplicate_blocks",
+        "missing_blocks",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "source-coverage-gate"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "total_blocks": {
+          "type": "integer"
+        },
+        "assigned_blocks": {
+          "type": "integer"
+        },
+        "duplicate_blocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "missing_blocks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

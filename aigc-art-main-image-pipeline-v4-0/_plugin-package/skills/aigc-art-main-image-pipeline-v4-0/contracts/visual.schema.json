@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visual.schema.json",
+  "$defs": {
+    "anchorFact": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "anchor_summary",
+        "identity_or_structure",
+        "evidence_ids",
+        "constraints"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "anchor_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identity_or_structure": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetAnchor": {
+      "type": "object",
+      "required": [
+        "anchor_id",
+        "base_asset_id",
+        "asset_type",
+        "anchor_task_id",
+        "anchor_summary",
+        "identity_or_structure",
+        "evidence_ids",
+        "constraints"
+      ],
+      "properties": {
+        "anchor_id": {
+          "type": "string"
+        },
+        "base_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "anchor_task_id": {
+          "type": "string"
+        },
+        "anchor_summary": {
+          "type": "string"
+        },
+        "identity_or_structure": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "promptSlotFact": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "slots",
+        "evidence_ids",
+        "quality_focus"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "slots": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quality_focus": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "promptSlot": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "base_asset_id",
+        "state_asset_id",
+        "asset_type",
+        "task_type",
+        "slots",
+        "evidence_ids",
+        "quality_focus"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "base_asset_id": {
+          "type": "string"
+        },
+        "state_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "text_to_image",
+            "image_text_edit"
+          ]
+        },
+        "slots": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quality_focus": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "renderedPrompt": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "prompt",
+        "edit_instruction",
+        "negative_prompt",
+        "template_key",
+        "evidence_ids"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "edit_instruction": {
+          "type": "string"
+        },
+        "negative_prompt": {
+          "type": "string"
+        },
+        "template_key": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "productionSourceRow": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "base_asset_id",
+        "state_asset_id",
+        "asset_type",
+        "asset_name",
+        "state_name",
+        "priority_level",
+        "task_type",
+        "anchor_task_id",
+        "status",
+        "episode_ids",
+        "scene_ids",
+        "evidence_ids",
+        "prompt",
+        "edit_instruction",
+        "negative_prompt",
+        "quality_focus"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "base_asset_id": {
+          "type": "string"
+        },
+        "state_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "state_name": {
+          "type": "string"
+        },
+        "priority_level": {
+          "type": "string",
+          "enum": [
+            "S",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "text_to_image",
+            "image_text_edit"
+          ]
+        },
+        "anchor_task_id": {
+          "type": "string"
+        },
+        "status": {
+          "const": "ready"
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "edit_instruction": {
+          "type": "string"
+        },
+        "negative_prompt": {
+          "type": "string"
+        },
+        "quality_focus": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "promptClosure": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "task_count",
+        "prompt_count",
+        "source_count",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "prompt-closure-gate"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "task_count": {
+          "type": "integer"
+        },
+        "prompt_count": {
+          "type": "integer"
+        },
+        "source_count": {
+          "type": "integer"
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

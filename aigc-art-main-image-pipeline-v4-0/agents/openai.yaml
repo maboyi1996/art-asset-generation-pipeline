@@ -1,0 +1,6 @@
+interface:
+  display_name: "AIGC 主图资产自动生产 V4.0.0"
+  short_description: "自动读取中文剧本并生成可导入中台的主图 prompt-manifest.json。"
+  default_prompt: "使用 $aigc-art-main-image-pipeline-v4-0 全自动读取中文剧本，按五模块 26 节点建立人物、场景、道具 JSON/JSONL 事实链，由 Python 生成稳定 ID、评级、状态、任务、提示词和 prompt-manifest.json；运行中不请求人工复核，默认不生成 DOCX。"
+policy:
+  allow_implicit_invocation: false

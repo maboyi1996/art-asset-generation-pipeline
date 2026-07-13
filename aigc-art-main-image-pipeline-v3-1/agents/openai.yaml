@@ -1,0 +1,7 @@
+interface:
+  display_name: "AIGC 主图资产生成流程 V3.1"
+  short_description: "生成 manifest 路由的分层 audit、生产源、中文 core prompt、JSON 和人审 DOCX。"
+  default_prompt: "使用 $aigc-art-main-image-pipeline-v3-1 读取中文剧本，建立人物/场景/道具无损证据账本，在状态拆分前完成 base asset 的硬 S/A/B/C 评级，让可见 C 级角色独立成图任务，按 artifact-manifest.json 输出 audit、production-source 和 deliverables，并交付 prompt-manifest.json 与 main-image-review-table.docx。"
+
+policy:
+  allow_implicit_invocation: true

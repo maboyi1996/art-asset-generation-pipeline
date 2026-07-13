@@ -1,0 +1,22 @@
+{
+  "name": "aigc-art-main-image-pipeline-v3-1-1",
+  "version": "0.1.0",
+  "description": "AIGC art main-image asset workflow V3.1.1",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AIGC Art Main Image Pipeline V3.1.1",
+    "shortDescription": "Generate script-faithful AIGC main-image asset tasks.",
+    "longDescription": "Wraps the existing local AIGC art main-image pipeline skill as a personal Codex plugin.",
+    "developerName": "Personal",
+    "category": "Productivity",
+    "capabilities": [
+      "Workflow"
+    ],
+    "defaultPrompt": [
+      "Use aigc-art-main-image-pipeline-v3-1-1 for this script."
+    ]
+  }
+}

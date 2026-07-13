@@ -1,0 +1,1371 @@
+{
+  "schema_version": "aigc-main-image-pipeline-contract.v4",
+  "skill_id": "aigc-art-main-image-pipeline-v4-0",
+  "skill_version": "4.0.0",
+  "architecture": {
+    "modules": [
+      "global",
+      "ingest",
+      "recognition",
+      "planning",
+      "visual",
+      "delivery"
+    ],
+    "logical_modules": 5,
+    "node_count": 26,
+    "mode_counts": {
+      "P": 15,
+      "M→P": 6,
+      "M+P": 5,
+      "model_only": 0
+    },
+    "machine_fact_source": "JSON/JSONL",
+    "default_delivery": "prompt-manifest",
+    "human_views_default": false,
+    "mid_run_human_review": false,
+    "dynamic_rule_mutation": false,
+    "semantic_precision_runtime_gate": false
+  },
+  "runtime_integrity_blocks": [
+    "unreadable_input",
+    "schema_invalid",
+    "duplicate_id",
+    "foreign_key_broken",
+    "required_artifact_missing",
+    "ready_task_missing_from_delivery",
+    "delivery_package_invalid"
+  ],
+  "precision_non_blocking": [
+    "minor_asset_recall_gap",
+    "rating_boundary_difference",
+    "state_count_difference",
+    "structurally_valid_semantic_difference",
+    "noncritical_benchmark_difference",
+    "prompt_quality_iteration"
+  ],
+  "nodes": [
+    {
+      "id": "run-bootstrap",
+      "module": "global",
+      "order": 1,
+      "mode": "P",
+      "depends_on": [],
+      "inputs": [],
+      "model_produces": [],
+      "python_produces": [
+        "run-manifest"
+      ],
+      "executor": "scripts/run_pipeline.py:init",
+      "validator": "scripts/validate_pipeline_contract.py"
+    },
+    {
+      "id": "document-read",
+      "module": "ingest",
+      "order": 2,
+      "mode": "P",
+      "depends_on": [
+        "run-bootstrap"
+      ],
+      "inputs": [
+        "run-manifest"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "source-blocks"
+      ],
+      "executor": "scripts/ingest.py:document-read",
+      "validator": "scripts/ingest.py:source-blocks"
+    },
+    {
+      "id": "scene-segmentation",
+      "module": "ingest",
+      "order": 3,
+      "mode": "M→P",
+      "depends_on": [
+        "document-read"
+      ],
+      "inputs": [
+        "source-blocks"
+      ],
+      "model_produces": [
+        "scene-boundary-factors"
+      ],
+      "python_produces": [
+        "scenes"
+      ],
+      "executor": "scripts/ingest.py:scene-segmentation",
+      "validator": "scripts/ingest.py:scenes",
+      "rules": [
+        "rules/01-ingest.md#scene-segmentation"
+      ],
+      "forbidden_model_fields": [
+        "episode_id",
+        "scene_id",
+        "source_hash"
+      ]
+    },
+    {
+      "id": "source-coverage-gate",
+      "module": "ingest",
+      "order": 4,
+      "mode": "P",
+      "depends_on": [
+        "scene-segmentation"
+      ],
+      "inputs": [
+        "source-blocks",
+        "scenes"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "source-coverage"
+      ],
+      "executor": "scripts/ingest.py:source-coverage",
+      "validator": "scripts/ingest.py:source-coverage"
+    },
+    {
+      "id": "mention-scan",
+      "module": "recognition",
+      "order": 5,
+      "mode": "M+P",
+      "depends_on": [
+        "source-coverage-gate"
+      ],
+      "inputs": [
+        "source-blocks",
+        "scenes",
+        "source-coverage"
+      ],
+      "model_produces": [
+        "mention-scan-facts"
+      ],
+      "python_produces": [
+        "raw-asset-mentions"
+      ],
+      "executor": "scripts/recognition.py:mention-scan",
+      "validator": "scripts/recognition.py:raw-mentions",
+      "rules": [
+        "rules/02-recognition.md#mention-scan"
+      ],
+      "forbidden_model_fields": [
+        "mention_id",
+        "entity_id",
+        "candidate_id"
+      ]
+    },
+    {
+      "id": "mention-confirmation",
+      "module": "recognition",
+      "order": 6,
+      "mode": "M+P",
+      "depends_on": [
+        "mention-scan"
+      ],
+      "inputs": [
+        "raw-asset-mentions",
+        "source-blocks"
+      ],
+      "model_produces": [
+        "mention-confirmation-facts"
+      ],
+      "python_produces": [
+        "mention-dispositions"
+      ],
+      "executor": "scripts/recognition.py:mention-confirmation",
+      "validator": "scripts/recognition.py:mention-dispositions",
+      "rules": [
+        "rules/02-recognition.md#mention-confirmation"
+      ],
+      "forbidden_model_fields": [
+        "entity_id",
+        "evidence_id",
+        "candidate_id"
+      ]
+    },
+    {
+      "id": "entity-resolution",
+      "module": "recognition",
+      "order": 7,
+      "mode": "M→P",
+      "depends_on": [
+        "mention-confirmation"
+      ],
+      "inputs": [
+        "mention-dispositions"
+      ],
+      "model_produces": [
+        "entity-relation-factors"
+      ],
+      "python_produces": [
+        "asset-entities",
+        "asset-aliases"
+      ],
+      "executor": "scripts/recognition.py:entity-resolution",
+      "validator": "scripts/recognition.py:entities",
+      "rules": [
+        "rules/02-recognition.md#entity-resolution"
+      ],
+      "forbidden_model_fields": [
+        "entity_id",
+        "alias_id",
+        "base_asset_id"
+      ]
+    },
+    {
+      "id": "evidence-ledger",
+      "module": "recognition",
+      "order": 8,
+      "mode": "M+P",
+      "depends_on": [
+        "entity-resolution"
+      ],
+      "inputs": [
+        "asset-entities",
+        "mention-dispositions",
+        "scenes",
+        "source-blocks"
+      ],
+      "model_produces": [
+        "evidence-facts"
+      ],
+      "python_produces": [
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "executor": "scripts/recognition.py:evidence-ledger",
+      "validator": "scripts/recognition.py:evidence",
+      "rules": [
+        "rules/02-recognition.md#evidence-ledger"
+      ],
+      "forbidden_model_fields": [
+        "evidence_id",
+        "candidate_id",
+        "base_asset_id"
+      ]
+    },
+    {
+      "id": "recognition-closure-gate",
+      "module": "recognition",
+      "order": 9,
+      "mode": "P",
+      "depends_on": [
+        "evidence-ledger"
+      ],
+      "inputs": [
+        "raw-asset-mentions",
+        "mention-dispositions",
+        "asset-entities",
+        "asset-aliases",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "recognition-closure"
+      ],
+      "executor": "scripts/recognition.py:recognition-closure",
+      "validator": "scripts/recognition.py:recognition-closure"
+    },
+    {
+      "id": "candidate-admission",
+      "module": "planning",
+      "order": 10,
+      "mode": "M→P",
+      "depends_on": [
+        "recognition-closure-gate"
+      ],
+      "inputs": [
+        "asset-entities",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence",
+        "recognition-closure"
+      ],
+      "model_produces": [
+        "admission-factors"
+      ],
+      "python_produces": [
+        "asset-candidates",
+        "admission-dispositions",
+        "polluted-labels"
+      ],
+      "executor": "scripts/planning.py:candidate-admission",
+      "validator": "scripts/planning.py:candidates",
+      "rules": [
+        "rules/03-planning.md#candidate-admission"
+      ],
+      "forbidden_model_fields": [
+        "candidate_id",
+        "admission_result",
+        "final_disposition",
+        "priority_level"
+      ]
+    },
+    {
+      "id": "asset-rating",
+      "module": "planning",
+      "order": 11,
+      "mode": "M→P",
+      "depends_on": [
+        "candidate-admission"
+      ],
+      "inputs": [
+        "asset-candidates",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "model_produces": [
+        "rating-factors"
+      ],
+      "python_produces": [
+        "asset-ratings"
+      ],
+      "executor": "scripts/planning.py:asset-rating",
+      "validator": "scripts/planning.py:ratings",
+      "rules": [
+        "rules/03-planning.md#asset-rating"
+      ],
+      "forbidden_model_fields": [
+        "base_asset_id",
+        "priority_level",
+        "rating_reason"
+      ]
+    },
+    {
+      "id": "base-asset-registration",
+      "module": "planning",
+      "order": 12,
+      "mode": "P",
+      "depends_on": [
+        "asset-rating"
+      ],
+      "inputs": [
+        "asset-entities",
+        "asset-aliases",
+        "asset-candidates",
+        "asset-ratings"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "base-asset-registry"
+      ],
+      "executor": "scripts/planning.py:base-registration",
+      "validator": "scripts/planning.py:registry"
+    },
+    {
+      "id": "state-variant",
+      "module": "planning",
+      "order": 13,
+      "mode": "M→P",
+      "depends_on": [
+        "base-asset-registration"
+      ],
+      "inputs": [
+        "base-asset-registry",
+        "asset-ratings",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "model_produces": [
+        "state-factors"
+      ],
+      "python_produces": [
+        "asset-states",
+        "state-dispositions"
+      ],
+      "executor": "scripts/planning.py:state-variant",
+      "validator": "scripts/planning.py:states",
+      "rules": [
+        "rules/03-planning.md#state-variant"
+      ],
+      "forbidden_model_fields": [
+        "state_asset_id",
+        "split_result",
+        "task_id"
+      ]
+    },
+    {
+      "id": "asset-disposition",
+      "module": "planning",
+      "order": 14,
+      "mode": "M→P",
+      "depends_on": [
+        "state-variant"
+      ],
+      "inputs": [
+        "asset-candidates",
+        "asset-ratings",
+        "base-asset-registry",
+        "asset-states",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "model_produces": [
+        "disposition-factors"
+      ],
+      "python_produces": [
+        "asset-dispositions"
+      ],
+      "executor": "scripts/planning.py:asset-disposition",
+      "validator": "scripts/planning.py:dispositions",
+      "rules": [
+        "rules/03-planning.md#asset-disposition"
+      ],
+      "forbidden_model_fields": [
+        "final_disposition",
+        "task_id",
+        "review_status"
+      ]
+    },
+    {
+      "id": "task-generation",
+      "module": "planning",
+      "order": 15,
+      "mode": "P",
+      "depends_on": [
+        "asset-disposition"
+      ],
+      "inputs": [
+        "asset-dispositions",
+        "base-asset-registry",
+        "asset-states",
+        "asset-ratings"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "production-tasks"
+      ],
+      "executor": "scripts/planning.py:task-generation",
+      "validator": "scripts/planning.py:tasks"
+    },
+    {
+      "id": "episode-usage-map",
+      "module": "planning",
+      "order": 16,
+      "mode": "P",
+      "depends_on": [
+        "task-generation"
+      ],
+      "inputs": [
+        "production-tasks",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence",
+        "scenes"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "episode-usage-map"
+      ],
+      "executor": "scripts/planning.py:episode-usage-map",
+      "validator": "scripts/planning.py:usage"
+    },
+    {
+      "id": "planning-closure-gate",
+      "module": "planning",
+      "order": 17,
+      "mode": "P",
+      "depends_on": [
+        "episode-usage-map"
+      ],
+      "inputs": [
+        "asset-candidates",
+        "admission-dispositions",
+        "polluted-labels",
+        "asset-ratings",
+        "base-asset-registry",
+        "asset-states",
+        "state-dispositions",
+        "asset-dispositions",
+        "production-tasks",
+        "episode-usage-map"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "planning-closure"
+      ],
+      "executor": "scripts/planning.py:planning-closure",
+      "validator": "scripts/planning.py:planning-closure"
+    },
+    {
+      "id": "asset-anchor",
+      "module": "visual",
+      "order": 18,
+      "mode": "M+P",
+      "depends_on": [
+        "planning-closure-gate"
+      ],
+      "inputs": [
+        "production-tasks",
+        "base-asset-registry",
+        "asset-states",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence",
+        "planning-closure"
+      ],
+      "model_produces": [
+        "anchor-facts"
+      ],
+      "python_produces": [
+        "asset-anchors"
+      ],
+      "executor": "scripts/visual.py:asset-anchor",
+      "validator": "scripts/visual.py:anchors",
+      "rules": [
+        "rules/04-visual-writing.md#asset-anchor"
+      ],
+      "forbidden_model_fields": [
+        "anchor_id",
+        "anchor_task_id",
+        "status"
+      ]
+    },
+    {
+      "id": "prompt-slots",
+      "module": "visual",
+      "order": 19,
+      "mode": "M+P",
+      "depends_on": [
+        "asset-anchor"
+      ],
+      "inputs": [
+        "production-tasks",
+        "asset-anchors",
+        "asset-states",
+        "character-evidence",
+        "scene-evidence",
+        "prop-evidence"
+      ],
+      "model_produces": [
+        "prompt-slot-facts"
+      ],
+      "python_produces": [
+        "prompt-slots"
+      ],
+      "executor": "scripts/visual.py:prompt-slots",
+      "validator": "scripts/visual.py:prompt-slots",
+      "rules": [
+        "rules/04-visual-writing.md#prompt-slots"
+      ],
+      "forbidden_model_fields": [
+        "prompt",
+        "edit_instruction",
+        "negative_prompt",
+        "status"
+      ]
+    },
+    {
+      "id": "prompt-render",
+      "module": "visual",
+      "order": 20,
+      "mode": "P",
+      "depends_on": [
+        "prompt-slots"
+      ],
+      "inputs": [
+        "prompt-slots"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "rendered-prompts"
+      ],
+      "executor": "scripts/visual.py:prompt-render",
+      "validator": "scripts/visual.py:rendered-prompts"
+    },
+    {
+      "id": "production-source",
+      "module": "visual",
+      "order": 21,
+      "mode": "P",
+      "depends_on": [
+        "prompt-render"
+      ],
+      "inputs": [
+        "production-tasks",
+        "asset-ratings",
+        "base-asset-registry",
+        "asset-states",
+        "asset-dispositions",
+        "asset-anchors",
+        "rendered-prompts",
+        "episode-usage-map"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "main-image-production-source"
+      ],
+      "executor": "scripts/visual.py:production-source",
+      "validator": "scripts/visual.py:production-source"
+    },
+    {
+      "id": "prompt-closure-gate",
+      "module": "visual",
+      "order": 22,
+      "mode": "P",
+      "depends_on": [
+        "production-source"
+      ],
+      "inputs": [
+        "production-tasks",
+        "asset-anchors",
+        "prompt-slots",
+        "rendered-prompts",
+        "main-image-production-source"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "prompt-closure"
+      ],
+      "executor": "scripts/visual.py:prompt-closure",
+      "validator": "scripts/visual.py:prompt-closure"
+    },
+    {
+      "id": "pre-delivery-audit",
+      "module": "delivery",
+      "order": 23,
+      "mode": "P",
+      "depends_on": [
+        "prompt-closure-gate"
+      ],
+      "inputs": [
+        "run-manifest",
+        "source-coverage",
+        "recognition-closure",
+        "planning-closure",
+        "prompt-closure",
+        "main-image-production-source"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "production-audit"
+      ],
+      "executor": "scripts/delivery.py:pre-delivery-audit",
+      "validator": "scripts/delivery.py:production-audit"
+    },
+    {
+      "id": "json-delivery",
+      "module": "delivery",
+      "order": 24,
+      "mode": "P",
+      "depends_on": [
+        "pre-delivery-audit"
+      ],
+      "inputs": [
+        "main-image-production-source",
+        "production-audit"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "prompt-manifest"
+      ],
+      "executor": "scripts/delivery.py:json-delivery",
+      "validator": "scripts/delivery.py:prompt-manifest"
+    },
+    {
+      "id": "human-view-delivery",
+      "module": "delivery",
+      "order": 25,
+      "mode": "P",
+      "depends_on": [
+        "pre-delivery-audit"
+      ],
+      "inputs": [
+        "main-image-production-source",
+        "production-audit"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "view-manifest"
+      ],
+      "executor": "scripts/delivery.py:human-view-delivery",
+      "validator": "scripts/delivery.py:view-manifest"
+    },
+    {
+      "id": "final-quality-gate",
+      "module": "delivery",
+      "order": 26,
+      "mode": "P",
+      "depends_on": [
+        "json-delivery",
+        "human-view-delivery"
+      ],
+      "inputs": [
+        "run-manifest",
+        "main-image-production-source",
+        "prompt-manifest",
+        "production-audit",
+        "prompt-closure",
+        "view-manifest"
+      ],
+      "model_produces": [],
+      "python_produces": [
+        "final-quality"
+      ],
+      "executor": "scripts/delivery.py:final-quality",
+      "validator": "scripts/delivery.py:final-quality"
+    }
+  ],
+  "artifacts": {
+    "run-manifest": {
+      "id": "run-manifest",
+      "path": "run-manifest.json",
+      "artifact_type": "json",
+      "role": "manifest",
+      "schema": "contracts/common.schema.json#/$defs/runManifest",
+      "required": true,
+      "producer": "run-bootstrap",
+      "consumers": [
+        "document-read",
+        "pre-delivery-audit",
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "source-blocks": {
+      "id": "source-blocks",
+      "path": "machine/source-blocks.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/ingest.schema.json#/$defs/sourceBlock",
+      "required": true,
+      "producer": "document-read",
+      "consumers": [
+        "scene-segmentation",
+        "source-coverage-gate",
+        "mention-scan",
+        "mention-confirmation",
+        "evidence-ledger"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "scene-boundary-factors": {
+      "id": "scene-boundary-factors",
+      "path": "machine/model/scene-boundary-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/ingest.schema.json#/$defs/sceneBoundaryFactor",
+      "required": true,
+      "producer": "scene-segmentation",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "scenes": {
+      "id": "scenes",
+      "path": "machine/scenes.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/ingest.schema.json#/$defs/scene",
+      "required": true,
+      "producer": "scene-segmentation",
+      "consumers": [
+        "source-coverage-gate",
+        "mention-scan",
+        "evidence-ledger",
+        "episode-usage-map"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "source-coverage": {
+      "id": "source-coverage",
+      "path": "validation/source-coverage.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/ingest.schema.json#/$defs/sourceCoverage",
+      "required": true,
+      "producer": "source-coverage-gate",
+      "consumers": [
+        "mention-scan",
+        "pre-delivery-audit"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "mention-scan-facts": {
+      "id": "mention-scan-facts",
+      "path": "machine/model/mention-scan-facts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/recognition.schema.json#/$defs/mentionScanFact",
+      "required": true,
+      "producer": "mention-scan",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "raw-asset-mentions": {
+      "id": "raw-asset-mentions",
+      "path": "machine/raw-asset-mentions.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/rawMention",
+      "required": true,
+      "producer": "mention-scan",
+      "consumers": [
+        "mention-confirmation",
+        "recognition-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "mention-confirmation-facts": {
+      "id": "mention-confirmation-facts",
+      "path": "machine/model/mention-confirmation-facts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/recognition.schema.json#/$defs/mentionConfirmationFact",
+      "required": true,
+      "producer": "mention-confirmation",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "mention-dispositions": {
+      "id": "mention-dispositions",
+      "path": "machine/mention-dispositions.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/mentionDisposition",
+      "required": true,
+      "producer": "mention-confirmation",
+      "consumers": [
+        "entity-resolution",
+        "evidence-ledger",
+        "recognition-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "entity-relation-factors": {
+      "id": "entity-relation-factors",
+      "path": "machine/model/entity-relation-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/recognition.schema.json#/$defs/entityRelationFactor",
+      "required": true,
+      "producer": "entity-resolution",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-entities": {
+      "id": "asset-entities",
+      "path": "machine/asset-entities.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/assetEntity",
+      "required": true,
+      "producer": "entity-resolution",
+      "consumers": [
+        "evidence-ledger",
+        "recognition-closure-gate",
+        "candidate-admission",
+        "base-asset-registration"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "asset-aliases": {
+      "id": "asset-aliases",
+      "path": "machine/asset-aliases.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/assetAlias",
+      "required": true,
+      "producer": "entity-resolution",
+      "consumers": [
+        "recognition-closure-gate",
+        "base-asset-registration"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "evidence-facts": {
+      "id": "evidence-facts",
+      "path": "machine/model/evidence-facts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/recognition.schema.json#/$defs/evidenceFact",
+      "required": true,
+      "producer": "evidence-ledger",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "character-evidence": {
+      "id": "character-evidence",
+      "path": "machine/character-evidence.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/evidence",
+      "required": true,
+      "producer": "evidence-ledger",
+      "consumers": [
+        "recognition-closure-gate",
+        "candidate-admission",
+        "asset-rating",
+        "state-variant",
+        "asset-disposition",
+        "episode-usage-map",
+        "asset-anchor",
+        "prompt-slots"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "scene-evidence": {
+      "id": "scene-evidence",
+      "path": "machine/scene-evidence.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/evidence",
+      "required": true,
+      "producer": "evidence-ledger",
+      "consumers": [
+        "recognition-closure-gate",
+        "candidate-admission",
+        "asset-rating",
+        "state-variant",
+        "asset-disposition",
+        "episode-usage-map",
+        "asset-anchor",
+        "prompt-slots"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "prop-evidence": {
+      "id": "prop-evidence",
+      "path": "machine/prop-evidence.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/recognition.schema.json#/$defs/evidence",
+      "required": true,
+      "producer": "evidence-ledger",
+      "consumers": [
+        "recognition-closure-gate",
+        "candidate-admission",
+        "asset-rating",
+        "state-variant",
+        "asset-disposition",
+        "episode-usage-map",
+        "asset-anchor",
+        "prompt-slots"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "recognition-closure": {
+      "id": "recognition-closure",
+      "path": "validation/recognition-closure.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/recognition.schema.json#/$defs/recognitionClosure",
+      "required": true,
+      "producer": "recognition-closure-gate",
+      "consumers": [
+        "candidate-admission",
+        "pre-delivery-audit"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "admission-factors": {
+      "id": "admission-factors",
+      "path": "machine/model/admission-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/planning.schema.json#/$defs/admissionFactor",
+      "required": true,
+      "producer": "candidate-admission",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-candidates": {
+      "id": "asset-candidates",
+      "path": "machine/asset-candidates.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/assetCandidate",
+      "required": true,
+      "producer": "candidate-admission",
+      "consumers": [
+        "asset-rating",
+        "base-asset-registration",
+        "asset-disposition",
+        "planning-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "admission-dispositions": {
+      "id": "admission-dispositions",
+      "path": "machine/admission-dispositions.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/admissionDisposition",
+      "required": true,
+      "producer": "candidate-admission",
+      "consumers": [
+        "planning-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "polluted-labels": {
+      "id": "polluted-labels",
+      "path": "machine/polluted-labels.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/pollutedLabel",
+      "required": true,
+      "producer": "candidate-admission",
+      "consumers": [
+        "planning-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "rating-factors": {
+      "id": "rating-factors",
+      "path": "machine/model/rating-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/planning.schema.json#/$defs/ratingFactor",
+      "required": true,
+      "producer": "asset-rating",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-ratings": {
+      "id": "asset-ratings",
+      "path": "machine/asset-ratings.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/assetRating",
+      "required": true,
+      "producer": "asset-rating",
+      "consumers": [
+        "base-asset-registration",
+        "state-variant",
+        "asset-disposition",
+        "task-generation",
+        "planning-closure-gate",
+        "production-source"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "base-asset-registry": {
+      "id": "base-asset-registry",
+      "path": "machine/base-asset-registry.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/baseAsset",
+      "required": true,
+      "producer": "base-asset-registration",
+      "consumers": [
+        "state-variant",
+        "asset-disposition",
+        "task-generation",
+        "planning-closure-gate",
+        "asset-anchor",
+        "production-source"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "state-factors": {
+      "id": "state-factors",
+      "path": "machine/model/state-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/planning.schema.json#/$defs/stateFactor",
+      "required": true,
+      "producer": "state-variant",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-states": {
+      "id": "asset-states",
+      "path": "machine/asset-states.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/assetState",
+      "required": true,
+      "producer": "state-variant",
+      "consumers": [
+        "asset-disposition",
+        "task-generation",
+        "planning-closure-gate",
+        "asset-anchor",
+        "prompt-slots",
+        "production-source"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "state-dispositions": {
+      "id": "state-dispositions",
+      "path": "machine/state-dispositions.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/stateDisposition",
+      "required": true,
+      "producer": "state-variant",
+      "consumers": [
+        "planning-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "disposition-factors": {
+      "id": "disposition-factors",
+      "path": "machine/model/disposition-factors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/planning.schema.json#/$defs/dispositionFactor",
+      "required": true,
+      "producer": "asset-disposition",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-dispositions": {
+      "id": "asset-dispositions",
+      "path": "machine/asset-dispositions.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/assetDisposition",
+      "required": true,
+      "producer": "asset-disposition",
+      "consumers": [
+        "task-generation",
+        "planning-closure-gate",
+        "production-source"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "production-tasks": {
+      "id": "production-tasks",
+      "path": "machine/production-tasks.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/productionTask",
+      "required": true,
+      "producer": "task-generation",
+      "consumers": [
+        "episode-usage-map",
+        "planning-closure-gate",
+        "asset-anchor",
+        "prompt-slots",
+        "production-source",
+        "prompt-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "episode-usage-map": {
+      "id": "episode-usage-map",
+      "path": "machine/episode-usage-map.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/planning.schema.json#/$defs/episodeUsage",
+      "required": true,
+      "producer": "episode-usage-map",
+      "consumers": [
+        "planning-closure-gate",
+        "production-source"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "planning-closure": {
+      "id": "planning-closure",
+      "path": "validation/planning-closure.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/planning.schema.json#/$defs/planningClosure",
+      "required": true,
+      "producer": "planning-closure-gate",
+      "consumers": [
+        "asset-anchor",
+        "pre-delivery-audit"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "anchor-facts": {
+      "id": "anchor-facts",
+      "path": "machine/model/anchor-facts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/visual.schema.json#/$defs/anchorFact",
+      "required": true,
+      "producer": "asset-anchor",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "asset-anchors": {
+      "id": "asset-anchors",
+      "path": "machine/asset-anchors.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/visual.schema.json#/$defs/assetAnchor",
+      "required": true,
+      "producer": "asset-anchor",
+      "consumers": [
+        "prompt-slots",
+        "production-source",
+        "prompt-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "prompt-slot-facts": {
+      "id": "prompt-slot-facts",
+      "path": "machine/model/prompt-slot-facts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "model_factors",
+      "schema": "contracts/visual.schema.json#/$defs/promptSlotFact",
+      "required": true,
+      "producer": "prompt-slots",
+      "consumers": [],
+      "audit_only": true,
+      "terminal": false
+    },
+    "prompt-slots": {
+      "id": "prompt-slots",
+      "path": "machine/prompt-slots.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/visual.schema.json#/$defs/promptSlot",
+      "required": true,
+      "producer": "prompt-slots",
+      "consumers": [
+        "prompt-render",
+        "prompt-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "rendered-prompts": {
+      "id": "rendered-prompts",
+      "path": "machine/rendered-prompts.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/visual.schema.json#/$defs/renderedPrompt",
+      "required": true,
+      "producer": "prompt-render",
+      "consumers": [
+        "production-source",
+        "prompt-closure-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "main-image-production-source": {
+      "id": "main-image-production-source",
+      "path": "machine/main-image-production-source.jsonl",
+      "artifact_type": "jsonl",
+      "role": "machine",
+      "schema": "contracts/visual.schema.json#/$defs/productionSourceRow",
+      "required": true,
+      "producer": "production-source",
+      "consumers": [
+        "prompt-closure-gate",
+        "pre-delivery-audit",
+        "json-delivery",
+        "human-view-delivery",
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "prompt-closure": {
+      "id": "prompt-closure",
+      "path": "validation/prompt-closure.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/visual.schema.json#/$defs/promptClosure",
+      "required": true,
+      "producer": "prompt-closure-gate",
+      "consumers": [
+        "pre-delivery-audit",
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "production-audit": {
+      "id": "production-audit",
+      "path": "validation/production-audit.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/delivery.schema.json#/$defs/productionAudit",
+      "required": true,
+      "producer": "pre-delivery-audit",
+      "consumers": [
+        "json-delivery",
+        "human-view-delivery",
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "prompt-manifest": {
+      "id": "prompt-manifest",
+      "path": "deliverables/prompt-manifest.json",
+      "artifact_type": "json",
+      "role": "deliverable",
+      "schema": "contracts/external/prompt-manifest.schema.json",
+      "required": true,
+      "producer": "json-delivery",
+      "consumers": [
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "view-manifest": {
+      "id": "view-manifest",
+      "path": "views/view-manifest.json",
+      "artifact_type": "json",
+      "role": "view",
+      "schema": "contracts/delivery.schema.json#/$defs/viewManifest",
+      "required": true,
+      "producer": "human-view-delivery",
+      "consumers": [
+        "final-quality-gate"
+      ],
+      "audit_only": false,
+      "terminal": false
+    },
+    "final-quality": {
+      "id": "final-quality",
+      "path": "validation/final-quality.json",
+      "artifact_type": "json",
+      "role": "validation",
+      "schema": "contracts/delivery.schema.json#/$defs/finalQuality",
+      "required": true,
+      "producer": "final-quality-gate",
+      "consumers": [],
+      "audit_only": false,
+      "terminal": true
+    }
+  }
+}

@@ -1,0 +1,504 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "recognition.schema.json",
+  "$defs": {
+    "mentionScanFact": {
+      "type": "object",
+      "required": [
+        "block_id",
+        "scene_id",
+        "asset_type",
+        "raw_text",
+        "normalized_hint",
+        "presence_type",
+        "is_visible",
+        "source_quote",
+        "rationale"
+      ],
+      "properties": {
+        "block_id": {
+          "type": "string"
+        },
+        "scene_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "raw_text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "normalized_hint": {
+          "type": "string"
+        },
+        "presence_type": {
+          "type": "string"
+        },
+        "is_visible": {
+          "type": "boolean"
+        },
+        "source_quote": {
+          "type": "string",
+          "minLength": 1
+        },
+        "rationale": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rawMention": {
+      "type": "object",
+      "required": [
+        "mention_id",
+        "block_id",
+        "scene_id",
+        "asset_type",
+        "raw_text",
+        "normalized_hint",
+        "presence_type",
+        "is_visible",
+        "source_quote"
+      ],
+      "properties": {
+        "mention_id": {
+          "type": "string"
+        },
+        "block_id": {
+          "type": "string"
+        },
+        "scene_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "raw_text": {
+          "type": "string"
+        },
+        "normalized_hint": {
+          "type": "string"
+        },
+        "presence_type": {
+          "type": "string"
+        },
+        "is_visible": {
+          "type": "boolean"
+        },
+        "source_quote": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mentionConfirmationFact": {
+      "type": "object",
+      "required": [
+        "mention_id",
+        "accepted",
+        "asset_type",
+        "normalized_label",
+        "presence_type",
+        "exclusion_reason",
+        "evidence_note"
+      ],
+      "properties": {
+        "mention_id": {
+          "type": "string"
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "normalized_label": {
+          "type": "string"
+        },
+        "presence_type": {
+          "type": "string"
+        },
+        "exclusion_reason": {
+          "type": "string"
+        },
+        "evidence_note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mentionDisposition": {
+      "type": "object",
+      "required": [
+        "mention_id",
+        "status",
+        "asset_type",
+        "normalized_label",
+        "presence_type",
+        "exclusion_reason",
+        "evidence_note",
+        "scene_id",
+        "block_id"
+      ],
+      "properties": {
+        "mention_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "excluded"
+          ]
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "normalized_label": {
+          "type": "string"
+        },
+        "presence_type": {
+          "type": "string"
+        },
+        "exclusion_reason": {
+          "type": "string"
+        },
+        "evidence_note": {
+          "type": "string"
+        },
+        "scene_id": {
+          "type": "string"
+        },
+        "block_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "entityRelationFactor": {
+      "type": "object",
+      "required": [
+        "mention_id",
+        "asset_type",
+        "canonical_name",
+        "scope_key",
+        "same_entity_basis",
+        "merge_confidence"
+      ],
+      "properties": {
+        "mention_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "canonical_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "same_entity_basis": {
+          "type": "string"
+        },
+        "merge_confidence": {
+          "type": "string",
+          "enum": [
+            "strong",
+            "medium",
+            "weak"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetEntity": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "asset_type",
+        "canonical_name",
+        "scope_key",
+        "mention_ids",
+        "scene_ids",
+        "episode_ids",
+        "source_evidence"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "canonical_name": {
+          "type": "string"
+        },
+        "scope_key": {
+          "type": "string"
+        },
+        "mention_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetAlias": {
+      "type": "object",
+      "required": [
+        "alias_id",
+        "entity_id",
+        "alias",
+        "canonical_name",
+        "mention_ids"
+      ],
+      "properties": {
+        "alias_id": {
+          "type": "string"
+        },
+        "entity_id": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "canonical_name": {
+          "type": "string"
+        },
+        "mention_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidenceFact": {
+      "type": "object",
+      "required": [
+        "mention_id",
+        "evidence_kind",
+        "source_evidence",
+        "visible_facts",
+        "design_clues",
+        "state_clues"
+      ],
+      "properties": {
+        "mention_id": {
+          "type": "string"
+        },
+        "evidence_kind": {
+          "type": "string"
+        },
+        "source_evidence": {
+          "type": "string",
+          "minLength": 1
+        },
+        "visible_facts": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "design_clues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "state_clues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "evidence_id",
+        "entity_id",
+        "mention_id",
+        "asset_type",
+        "canonical_name",
+        "episode_id",
+        "scene_id",
+        "block_id",
+        "source_evidence",
+        "visible_facts",
+        "design_clues",
+        "state_clues"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "entity_id": {
+          "type": "string"
+        },
+        "mention_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "canonical_name": {
+          "type": "string"
+        },
+        "episode_id": {
+          "type": "string"
+        },
+        "scene_id": {
+          "type": "string"
+        },
+        "block_id": {
+          "type": "string"
+        },
+        "source_evidence": {
+          "type": "string"
+        },
+        "visible_facts": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "design_clues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "state_clues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "recognitionClosure": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "accepted_mentions",
+        "entities",
+        "evidence_rows",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "recognition-closure-gate"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "accepted_mentions": {
+          "type": "integer"
+        },
+        "entities": {
+          "type": "integer"
+        },
+        "evidence_rows": {
+          "type": "integer"
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

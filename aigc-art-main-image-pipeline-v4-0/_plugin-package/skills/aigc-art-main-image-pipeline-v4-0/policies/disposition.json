@@ -1,0 +1,15 @@
+{
+  "schema_version": "aigc-disposition-policy.v4",
+  "results": [
+    "production_task",
+    "alias_to",
+    "grouped_into",
+    "excluded",
+    "not_visual_candidate"
+  ],
+  "default_visible_independent": "production_task",
+  "alias_requires_target": true,
+  "group_requires_target": true,
+  "nonvisual": "not_visual_candidate",
+  "no_manual_review_status": true
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": "aigc-task-policy.v4",
+  "methods": [
+    "text_to_image",
+    "image_text_edit"
+  ],
+  "status": "ready",
+  "image_ratios": {
+    "ROLE": "9:16",
+    "SCENE": "16:9",
+    "PROP": "16:9"
+  },
+  "visible_character_c_independent_task": true,
+  "bc_states_forbidden": true,
+  "image_text_edit": {
+    "asset_type": "character",
+    "anchor_same_base": true,
+    "anchor_method": "text_to_image"
+  },
+  "style_prefix_owner": "middle_platform",
+  "style_prefix_required": true
+}

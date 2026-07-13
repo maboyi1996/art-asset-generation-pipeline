@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "seedance-element-extract-manifest.v1",
+  "manifestVersion": "1.0",
+  "generationScope": "main_image_only",
+  "contentId": "326706045055401984",
+  "source": {
+    "skillId": "aigc-art-main-image-pipeline-v3-1",
+    "skillVersion": "3.1",
+    "generatedAt": "2026-06-22T17:35:20+08:00",
+    "promptMode": "core_prompt_requires_style_prefix",
+    "stylePrefixOwner": "middle_platform",
+    "stylePrefixRequired": true,
+    "artifactManifest": "artifact-manifest.json"
+  },
+  "project": {
+    "title": "示例项目"
+  },
+  "summary": {
+    "totalItems": 3,
+    "manualReviewItems": 0
+  },
+  "assets": [
+    {
+      "assetId": "role_tang_ning",
+      "templateName": "棠宁",
+      "templateType": "ROLE",
+      "description": "聪慧隐忍的女主，外柔内刚。",
+      "appearance": {
+        "description": "青年女性，古装短剧气质，清冷坚韧。",
+        "appearances": [
+          {
+            "stateId": "role_tang_ning_plain",
+            "name": "素衣常服",
+            "episodes": [1, 2],
+            "imageRatio": "9:16",
+            "imagePrompt": "人物胸像主设定图，竖版9:16，单人居中，中性灰背景。棠宁，青年女性，素衣常服，清冷坚韧，脸型干净，眼神克制但有韧性，服装颜色素净，肩颈姿态端正。不要其他人物，不要场景，不要动作戏，不要可读文字或水印。",
+            "negativePrompt": "不要现代服装，不要年龄错误，不要重复脸，不要其他人物，不要可读文字，不要水印。",
+            "priority": "S",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "年龄、脸型、服装颜色必须稳定"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "第1集首次出场，是主要女性角色。"
+      }
+    },
+    {
+      "assetId": "scene_governor_bath",
+      "templateName": "督主府汤池",
+      "templateType": "SCENE",
+      "description": "督主府内隐秘汤池，水汽重，适合夜间刺杀戏。",
+      "appearance": {
+        "description": "古装权谋短剧中的室内汤池空间。",
+        "appearances": [
+          {
+            "stateId": "scene_governor_bath_night",
+            "name": "夜景水汽状态",
+            "episodes": [1],
+            "imageRatio": "16:9",
+            "imagePrompt": "主场景资产图，横版16:9，无人物。督主府汤池夜景，古代权贵府邸内隐秘汤池空间，石砌水池、水汽、暖色灯笼光、屏风和深处墙面形成层次，空间潮湿、紧张、隐秘。不要现代浴室，不要人物，不要可读文字或水印。",
+            "negativePrompt": "不要现代浴室，不要霓虹灯，不要人物，不要可读文字，不要水印。",
+            "priority": "S",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "必须是古装室内汤池，不要现代浴室"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "第1集刺杀戏主要场景。"
+      }
+    },
+    {
+      "assetId": "prop_hairpin_dagger",
+      "templateName": "藏锋发簪",
+      "templateType": "PROP",
+      "description": "四夫人用来行刺的发簪，外观像首饰，尖端可刺杀。",
+      "appearance": {
+        "description": "古装女性发簪道具，兼具首饰和暗器感。",
+        "appearances": [
+          {
+            "stateId": "prop_hairpin_dagger_clean",
+            "name": "未出鞘状态",
+            "episodes": [1],
+            "imageRatio": "1:1",
+            "imagePrompt": "道具资产参考图，横版16:9，左右并列展示正面和背面，中性灰背景。藏锋发簪，古代女性发簪道具，外观首先是精致金属首饰，结构中隐藏锋利尖端，金属有细致雕纹和冷光，整体完整、干净、可读。不要手，不要人物，不要环境，不要现代刀具或枪械，不要可读文字或水印。",
+            "negativePrompt": "不要现代刀具，不要枪械，不要人物，不要手，不要可读文字，不要水印。",
+            "priority": "A",
+            "status": "ready",
+            "generation": {
+              "method": "text_to_image"
+            },
+            "reviewFocus": "看起来首先是发簪，其次才有暗器感"
+          }
+        ]
+      },
+      "metadata": {
+        "source": "agent",
+        "firstAppearance": "E01-S001",
+        "evidenceSummary": "四夫人行刺动作的关键道具。"
+      }
+    }
+  ]
+}

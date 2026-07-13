@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "$defs": {
+    "runManifest": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "run_id",
+        "project_id",
+        "source",
+        "skill",
+        "contract",
+        "resources",
+        "options",
+        "artifacts",
+        "nodes",
+        "created_at"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "aigc-main-image-run.v4"
+        },
+        "run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "project_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "minLength": 64
+            }
+          },
+          "additionalProperties": false
+        },
+        "skill": {
+          "type": "object",
+          "required": [
+            "id",
+            "version"
+          ],
+          "properties": {
+            "id": {
+              "const": "aigc-art-main-image-pipeline-v4-0"
+            },
+            "version": {
+              "const": "4.0.0"
+            }
+          },
+          "additionalProperties": false
+        },
+        "contract": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "sha256": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "options": {
+          "type": "object",
+          "required": [
+            "include_human_views"
+          ],
+          "properties": {
+            "include_human_views": {
+              "type": "boolean"
+            },
+            "project_title": {
+              "type": "string"
+            },
+            "content_id": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        },
+        "artifacts": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "nodes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gateResult": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "issue": {
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "artifact_id": {
+          "type": "string"
+        },
+        "record_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema_version": "core-prompt-render-templates.v1",
+  "negative_prompts": {
+    "character": "不要环境，不要其他人物，不要剧情截图，不要动作姿势，不要复杂剧情背景；不要错误年龄、性别、身份或角色类型；不要让手部、武器、道具、服装或装饰遮挡或抢过脸；不要水印，不要可读文字。",
+    "scene": "不要错误空间身份；不要错误阶层质感；不要让空间布局不可读；不要让核心场景元素消失；不要随机堆满无关道具；不要变成动作截图；不要人物；不要可读文字、真实品牌标识或水印。",
+    "prop": "单个道具主体，不要环境，不要人物，不要手，不要变成剧情截图或手持使用状态；不要错误道具类型；不要随机增加无关物件；不要让核心结构和材质状态消失；不要商品广告图；不要可读文字、真实品牌标识或水印。",
+    "image_text_edit": "不要变成另一个人；不要改变脸型、骨相、五官比例、眼距、眼型、鼻子、嘴型、下颌、肤色倾向或年龄段；不要美化重设计；不要年龄错误；不要通用替代脸；不要加入道具、房间、地点、其他人物、可读文字或水印。"
+  },
+  "templates": {
+    "character:text_to_image": {
+      "required_slots": [
+        "identity",
+        "face_features",
+        "hair_and_decoration",
+        "body_posture",
+        "costume_visible_decoration",
+        "palette_memory_point",
+        "gaze",
+        "expression",
+        "body_language",
+        "emotion_core"
+      ],
+      "target_field": "prompt",
+      "text": "图像类型：人物胸像主设定图。\n\n画幅比例：竖版 9:16。\n\n构图规格：单人胸像，只有一个人物主体，干净中性灰背景，人物居中展示。画面必须清晰看见脸部、颈部、肩部和上胸，人物轮廓明确。\n\n背景规则：#808080 色号代表的干净中性灰底图。\n\n角色身份：{identity}\n\n脸部特征：{face_features}\n\n发型与修饰：{hair_and_decoration}\n\n身形与体态：{body_posture}\n\n服装与可见装饰：{costume_visible_decoration}\n\n配色与识别重点：{palette_memory_point}\n\n眼神：{gaze}\n\n表情：{expression}\n\n身体语言：{body_language}\n\n情绪核心：{emotion_core}\n\n负向约束：{negative_prompt}"
+    },
+    "scene:text_to_image": {
+      "required_slots": [
+        "scene_name",
+        "space_identity",
+        "scene_positioning",
+        "time_state",
+        "story_function",
+        "one_sentence_positioning",
+        "camera_space_relation",
+        "visual_center",
+        "foreground",
+        "midground",
+        "background",
+        "hidden_space_hint",
+        "required_elements",
+        "optional_details",
+        "key_light",
+        "fill_light",
+        "light_dark_relation",
+        "color_tendency",
+        "air_state",
+        "mood_core"
+      ],
+      "target_field": "prompt",
+      "text": "图像类型：主场景资产图。\n\n画幅比例：横版 16:9。\n\n人物规则：无人物，无可识别人物，无人形主体。\n\n画面规则：空间布局清楚，前景、中景、背景层次明确，入口、主空间、视觉中心和空间纵深清楚；细节丰富但不杂乱，主视觉锚点明确。\n\n场景名称：{scene_name}\n\n准确空间身份：{space_identity}\n\n场景定位：{scene_positioning}\n\n时间状态：{time_state}\n\n剧情功能：{story_function}\n\n一句话定位：{one_sentence_positioning}\n\n观察点与空间关系：{camera_space_relation}\n\n视觉中心：{visual_center}\n\n前景：{foreground}\n\n中景：{midground}\n\n背景：{background}\n\n空间暗示：{hidden_space_hint}\n\n必须出现：{required_elements}\n\n可选细节：{optional_details}\n\n主光源：{key_light}\n\n辅助光：{fill_light}\n\n明暗关系：{light_dark_relation}\n\n色彩倾向：{color_tendency}\n\n空气状态：{air_state}\n\n氛围与情绪：{mood_core}\n\n负向约束：{negative_prompt}"
+    },
+    "prop:text_to_image": {
+      "required_slots": [
+        "prop_name",
+        "object_identity",
+        "ownership_usage",
+        "story_function",
+        "one_sentence_positioning",
+        "required_elements",
+        "optional_details",
+        "overall_condition"
+      ],
+      "target_field": "prompt",
+      "text": "图像类型：道具资产参考图。\n\n画幅比例：横版 16:9。\n\n版式规则：左右两块并列展示，每块约 8:9。左侧为道具正面图，右侧为道具背面图。\n\n背景规则：#808080 色号代表的干净中性灰底图。\n\n道具名称：{prop_name}\n\n准确道具身份：{object_identity}\n\n归属与用途：{ownership_usage}\n\n剧情功能：{story_function}\n\n一句话定位：{one_sentence_positioning}\n\n必须出现：{required_elements}\n\n可选细节：{optional_details}\n\n整体状态：{overall_condition}\n\n负向约束：{negative_prompt}"
+    },
+    "character:image_text_edit": {
+      "required_slots": [
+        "identity_reference_image",
+        "identity_preservation",
+        "state_delta_prompt",
+        "composition_preservation"
+      ],
+      "target_field": "edit_instruction",
+      "text": "任务类型：image_text_edit。\n\n输入图：{identity_reference_image}\n\n身份保持规则：{identity_preservation}\n\n只允许改变以下可见状态细节：{state_delta_prompt}\n\n构图保持：{composition_preservation}\n\n负向约束：{negative_prompt}\n\n画幅比例：竖版 9:16。"
+    }
+  }
+}

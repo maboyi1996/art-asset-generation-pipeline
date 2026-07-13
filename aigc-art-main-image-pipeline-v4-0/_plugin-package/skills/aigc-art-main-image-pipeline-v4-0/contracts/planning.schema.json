@@ -1,0 +1,780 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "planning.schema.json",
+  "$defs": {
+    "admissionFactor": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "is_visual",
+        "is_stable_subject",
+        "is_nonvisual_only",
+        "is_polluted",
+        "physical_presence",
+        "candidate_scope",
+        "visual_form",
+        "explicit_exclusion_reason"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "is_visual": {
+          "type": "boolean"
+        },
+        "is_stable_subject": {
+          "type": "boolean"
+        },
+        "is_nonvisual_only": {
+          "type": "boolean"
+        },
+        "is_polluted": {
+          "type": "boolean"
+        },
+        "physical_presence": {
+          "type": "string"
+        },
+        "candidate_scope": {
+          "type": "string"
+        },
+        "visual_form": {
+          "type": "string"
+        },
+        "explicit_exclusion_reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetCandidate": {
+      "type": "object",
+      "required": [
+        "candidate_id",
+        "entity_id",
+        "asset_type",
+        "asset_name",
+        "candidate_scope",
+        "scene_ids",
+        "episode_ids",
+        "evidence_ids",
+        "admission_result",
+        "admission_reason"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string"
+        },
+        "entity_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "candidate_scope": {
+          "type": "string"
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "admission_result": {
+          "const": "admitted"
+        },
+        "admission_reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "admissionDisposition": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "result",
+        "reason",
+        "candidate_id"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "admitted",
+            "evidence_only",
+            "visible_exclusion",
+            "polluted_exclusion"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "candidate_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "pollutedLabel": {
+      "type": "object",
+      "required": [
+        "entity_id",
+        "asset_type",
+        "raw_label",
+        "reason"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "raw_label": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ratingFactor": {
+      "type": "object",
+      "required": [
+        "candidate_id",
+        "visible_episode_ids",
+        "scene_ids",
+        "evidence_ids",
+        "mainline_dependency",
+        "appearance_frequency",
+        "strong_design_need",
+        "all_visible_one_segment",
+        "max_segment_seconds"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string"
+        },
+        "visible_episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mainline_dependency": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "appearance_frequency": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "strong_design_need": {
+          "type": "boolean"
+        },
+        "all_visible_one_segment": {
+          "type": "boolean"
+        },
+        "max_segment_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetRating": {
+      "type": "object",
+      "required": [
+        "candidate_id",
+        "asset_type",
+        "asset_name",
+        "priority_level",
+        "evidence_ids",
+        "episode_ids",
+        "scene_ids",
+        "rating_reason"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "priority_level": {
+          "type": "string",
+          "enum": [
+            "S",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rating_reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseAsset": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "candidate_id",
+        "entity_id",
+        "asset_type",
+        "asset_name",
+        "priority_level",
+        "evidence_ids",
+        "episode_ids",
+        "scene_ids"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "candidate_id": {
+          "type": "string"
+        },
+        "entity_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "priority_level": {
+          "type": "string",
+          "enum": [
+            "S",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "stateFactor": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "state_name",
+        "visible_stable_difference",
+        "non_state",
+        "source_evidence_ids",
+        "scene_ids",
+        "state_basis_type",
+        "visual_difference",
+        "evidence_strength",
+        "reuse_state_key"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "state_name": {
+          "type": "string"
+        },
+        "visible_stable_difference": {
+          "type": "boolean"
+        },
+        "non_state": {
+          "type": "boolean"
+        },
+        "source_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "state_basis_type": {
+          "type": "string"
+        },
+        "visual_difference": {
+          "type": "string"
+        },
+        "evidence_strength": {
+          "type": "string",
+          "enum": [
+            "strong",
+            "medium",
+            "weak"
+          ]
+        },
+        "reuse_state_key": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetState": {
+      "type": "object",
+      "required": [
+        "state_asset_id",
+        "base_asset_id",
+        "asset_type",
+        "state_name",
+        "source_evidence_ids",
+        "scene_ids",
+        "episode_ids",
+        "visual_difference",
+        "state_basis_type"
+      ],
+      "properties": {
+        "state_asset_id": {
+          "type": "string"
+        },
+        "base_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "state_name": {
+          "type": "string"
+        },
+        "source_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "visual_difference": {
+          "type": "string"
+        },
+        "state_basis_type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "stateDisposition": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "state_name",
+        "result",
+        "reason",
+        "state_asset_id"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "state_name": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "created",
+            "base_only",
+            "excluded_non_state",
+            "excluded_weak"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "state_asset_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dispositionFactor": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "has_independent_visual_need",
+        "is_alias",
+        "alias_to_base_asset_id",
+        "is_generic",
+        "group_target_base_asset_id",
+        "is_nonvisual",
+        "explicit_exclusion_reason"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "has_independent_visual_need": {
+          "type": "boolean"
+        },
+        "is_alias": {
+          "type": "boolean"
+        },
+        "alias_to_base_asset_id": {
+          "type": "string"
+        },
+        "is_generic": {
+          "type": "boolean"
+        },
+        "group_target_base_asset_id": {
+          "type": "string"
+        },
+        "is_nonvisual": {
+          "type": "boolean"
+        },
+        "explicit_exclusion_reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetDisposition": {
+      "type": "object",
+      "required": [
+        "base_asset_id",
+        "asset_type",
+        "priority_level",
+        "final_disposition",
+        "target_base_asset_id",
+        "reason"
+      ],
+      "properties": {
+        "base_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "priority_level": {
+          "type": "string",
+          "enum": [
+            "S",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "final_disposition": {
+          "type": "string",
+          "enum": [
+            "production_task",
+            "alias_to",
+            "grouped_into",
+            "excluded",
+            "not_visual_candidate"
+          ]
+        },
+        "target_base_asset_id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "productionTask": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "base_asset_id",
+        "state_asset_id",
+        "asset_type",
+        "asset_name",
+        "state_name",
+        "priority_level",
+        "task_type",
+        "anchor_task_id",
+        "status",
+        "evidence_ids",
+        "scene_ids",
+        "episode_ids"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "base_asset_id": {
+          "type": "string"
+        },
+        "state_asset_id": {
+          "type": "string"
+        },
+        "asset_type": {
+          "type": "string",
+          "enum": [
+            "character",
+            "scene",
+            "prop"
+          ]
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "state_name": {
+          "type": "string"
+        },
+        "priority_level": {
+          "type": "string",
+          "enum": [
+            "S",
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "text_to_image",
+            "image_text_edit"
+          ]
+        },
+        "anchor_task_id": {
+          "type": "string"
+        },
+        "status": {
+          "const": "ready"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "episode_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "episodeUsage": {
+      "type": "object",
+      "required": [
+        "usage_id",
+        "task_id",
+        "episode_id",
+        "scene_ids",
+        "evidence_ids"
+      ],
+      "properties": {
+        "usage_id": {
+          "type": "string"
+        },
+        "task_id": {
+          "type": "string"
+        },
+        "episode_id": {
+          "type": "string"
+        },
+        "scene_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "planningClosure": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "candidate_count",
+        "registry_count",
+        "task_count",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "planning-closure-gate"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "candidate_count": {
+          "type": "integer"
+        },
+        "registry_count": {
+          "type": "integer"
+        },
+        "task_count": {
+          "type": "integer"
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "aigc-art-main-image-pipeline-v4-0",
+  "version": "4.0.0+codex.20260710132324",
+  "description": "Automated script-faithful AIGC main-image asset pipeline V4.0.0",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AIGC Art Main Image Pipeline V4.0.0",
+    "shortDescription": "Automate script-to-Seedance main-image production JSON.",
+    "longDescription": "Five-module, 26-node automated pipeline with JSON/JSONL machine facts, deterministic Python decisions, no mid-run human review, and optional derived views.",
+    "developerName": "Personal",
+    "category": "Productivity",
+    "capabilities": [
+      "Workflow"
+    ],
+    "defaultPrompt": "Use aigc-art-main-image-pipeline-v4-0 to convert this Chinese script into validated prompt-manifest.json."
+  }
+}

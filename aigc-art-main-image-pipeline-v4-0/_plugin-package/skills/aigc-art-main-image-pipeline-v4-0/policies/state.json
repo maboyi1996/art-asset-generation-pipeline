@@ -1,0 +1,20 @@
+{
+  "schema_version": "aigc-state-policy.v4",
+  "eligible_priorities": [
+    "S",
+    "A"
+  ],
+  "create_when": {
+    "visible_stable_difference": true,
+    "non_state": false,
+    "evidence_strength": [
+      "strong",
+      "medium"
+    ]
+  },
+  "weak_policy": "base_only",
+  "bc_policy": "base_only",
+  "character_state_method": "image_text_edit",
+  "scene_state_method": "text_to_image",
+  "prop_state_method": "text_to_image"
+}

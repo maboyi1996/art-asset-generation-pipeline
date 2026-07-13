@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "delivery.schema.json",
+  "$defs": {
+    "productionAudit": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "checks",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "pre-delivery-audit"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "checks": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "viewManifest": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "generated_files",
+        "source_artifact",
+        "source_sha256"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "generated_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_artifact": {
+          "const": "main-image-production-source"
+        },
+        "source_sha256": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "finalQuality": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "status",
+        "machine_integrity",
+        "delivery_ready",
+        "blocking_errors",
+        "warnings",
+        "input_hashes",
+        "output_hashes",
+        "precision_claim"
+      ],
+      "properties": {
+        "gate_id": {
+          "const": "final-quality-gate"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "passed",
+            "failed"
+          ]
+        },
+        "machine_integrity": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "invalid"
+          ]
+        },
+        "delivery_ready": {
+          "type": "boolean"
+        },
+        "blocking_errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "output_hashes": {
+          "type": "object",
+          "required": [],
+          "properties": {},
+          "additionalProperties": true
+        },
+        "precision_claim": {
+          "const": "not_evaluated_at_runtime"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

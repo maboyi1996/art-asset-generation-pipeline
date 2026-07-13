@@ -1,0 +1,94 @@
+{
+  "schema_version": "aigc-artifact-manifest.v1",
+  "skill_id": "aigc-art-main-image-pipeline-v3-1",
+  "skill_version": "3.1",
+  "project_id": "example-project",
+  "created_at": "2026-07-09T00:00:00+08:00",
+  "artifacts": [
+    {
+      "id": "scene-coverage-table",
+      "role": "audit",
+      "path": "audit/scene-coverage-table.md",
+      "artifact_type": "markdown_table",
+      "producer": "scene-coverage.md",
+      "consumers": [
+        "asset-evidence-ledger.md",
+        "episode-usage-map.md"
+      ],
+      "required": true,
+      "read_policy": "audit_only"
+    },
+    {
+      "id": "core-prompt-slots",
+      "role": "production_source",
+      "path": "production-source/core-prompt-slots.md",
+      "artifact_type": "markdown_table",
+      "producer": "prompt-generation.md",
+      "consumers": [
+        "render_core_prompts.py"
+      ],
+      "required": true,
+      "read_policy": "production_source_only"
+    },
+    {
+      "id": "prompted-production-task-table",
+      "role": "production_source",
+      "path": "production-source/prompted-production-task-table.md",
+      "artifact_type": "markdown_table",
+      "producer": "render_core_prompts.py",
+      "consumers": [
+        "output-contracts.md"
+      ],
+      "required": true,
+      "read_policy": "production_source_only"
+    },
+    {
+      "id": "main-image-production-table",
+      "role": "production_source",
+      "path": "production-source/main-image-production-table.md",
+      "artifact_type": "markdown_table",
+      "producer": "output-contracts.md",
+      "consumers": [
+        "generate_prompt_manifest.py",
+        "generate_review_docx.py",
+        "validate_production_source.py"
+      ],
+      "required": true,
+      "read_policy": "production_source_only"
+    },
+    {
+      "id": "prompt-manifest",
+      "role": "deliverable",
+      "path": "deliverables/prompt-manifest.json",
+      "artifact_type": "json",
+      "producer": "generate_prompt_manifest.py",
+      "consumers": [
+        "validate_prompt_manifest.py"
+      ],
+      "required": true,
+      "read_policy": "deliverable_only"
+    },
+    {
+      "id": "main-image-review-table",
+      "role": "deliverable",
+      "path": "deliverables/main-image-review-table.docx",
+      "artifact_type": "docx",
+      "producer": "generate_review_docx.py",
+      "consumers": [
+        "validate_review_docx.py"
+      ],
+      "required": true,
+      "read_policy": "deliverable_only"
+    },
+    {
+      "id": "final-quality-report",
+      "role": "validation_report",
+      "path": "deliverables/final-quality-report.md",
+      "artifact_type": "report",
+      "producer": "final-quality.md",
+      "consumers": [],
+      "required": true,
+      "read_policy": "validation_only"
+    }
+  ]
+}

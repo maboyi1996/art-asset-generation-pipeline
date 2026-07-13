@@ -1,0 +1,33 @@
+{
+  "schema_version": "aigc-rating-policy.v4",
+  "priorities": [
+    "S",
+    "A",
+    "B",
+    "C"
+  ],
+  "character": {
+    "cross_episode_minimum": 2,
+    "character_c_max_segment_seconds": 15,
+    "s_when": [
+      "mainline_dependency=high",
+      "appearance_frequency=high",
+      "strong_design_need=true"
+    ],
+    "single_episode_default": "B",
+    "single_segment_short": "C"
+  },
+  "scene": {
+    "cross_episode_default": "A",
+    "cross_episode_high": "S",
+    "single_episode_high": "B",
+    "single_episode_low": "C"
+  },
+  "prop": {
+    "cross_episode_default": "A",
+    "cross_episode_high": "S",
+    "single_episode_high": "B",
+    "single_episode_low": "C"
+  },
+  "uncertain_boundary_policy": "conservative_higher_continuity"
+}

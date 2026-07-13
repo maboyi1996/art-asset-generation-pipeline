@@ -1,0 +1,17 @@
+{
+  "schema_version": "aigc-human-views.v4",
+  "default_enabled": false,
+  "views": [
+    {
+      "id": "production-table-md",
+      "path": "views/main-image-production-table.md",
+      "format": "md"
+    },
+    {
+      "id": "review-docx",
+      "path": "deliverables/main-image-review-table.docx",
+      "format": "docx"
+    }
+  ],
+  "machine_input_forbidden": true
+}
